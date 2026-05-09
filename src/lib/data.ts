@@ -11,6 +11,7 @@ export const siteData = {
 
   photos: {
     primary: 'https://res.cloudinary.com/dkrvtfbor/image/upload/v1775338145/IMG_20260405_025506_s0ne5r.jpg',
+    secondary: 'https://res.cloudinary.com/dkrvtfbor/image/upload/v1775338145/IMG_20260405_025506_s0ne5r.jpg',
   },
 
   contact: {
@@ -36,6 +37,7 @@ export const siteData = {
       institution: 'Sri Chaitanya Educational Institutions',
       degree: 'Class 11 & 12 — State Board (MPC)',
       period: '2020 – 2022',
+
       current: false,
       logo: 'https://lookaside.fbsbx.com/lookaside/crawler/media/?media_id=100065094917919',
     },
