@@ -53,12 +53,7 @@ export default function HeroSection() {
       <motion.div
         className="pointer-events-none absolute inset-0 opacity-20"
         style={{
-          background: useSpring(
-            // Build a reactive string via template literal not supported directly;
-            // we instead use a div that repositions
-            'transparent',
-            { stiffness: 60, damping: 20 }
-          ),
+          background: 'transparent',
         }}
       />
       <motion.div
