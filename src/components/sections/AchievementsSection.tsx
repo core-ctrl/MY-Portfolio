@@ -60,19 +60,14 @@ function MedalCarousel({ medals }: { medals: { lift: string; photo: string }[] }
           <button
             key={m.lift}
             onClick={() => setActive(i)}
-            className="relative flex-1 aspect-square rounded-xl overflow-hidden"
-            style={{
-              ring: i === active ? '2px solid #f59e0b' : 'none',
-              outline: i === active ? '2px solid #f59e0b' : '2px solid transparent',
-              outlineOffset: '2px',
-            }}
+            className={`relative flex-1 aspect-square rounded-xl overflow-hidden outline-offset-2 transition-all ${i === active ? "outline outline-2 outline-amber-400" : "outline outline-2 outline-transparent"
+              }`}
           >
             <img
               src={m.photo}
               alt={m.lift}
-              className={`w-full h-full object-cover transition-all duration-200 ${
-                i === active ? 'opacity-100' : 'opacity-40 hover:opacity-70'
-              }`}
+              className={`w-full h-full object-cover transition-all duration-200 ${i === active ? 'opacity-100' : 'opacity-40 hover:opacity-70'
+                }`}
             />
           </button>
         ))}
