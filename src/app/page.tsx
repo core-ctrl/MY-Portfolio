@@ -14,6 +14,8 @@ import AchievementsSection from '@/components/sections/AchievementsSection'
 import ContactSection from '@/components/sections/ContactSection'
 import Footer from '@/components/layout/Footer'
 
+
+
 export default function HomePage() {
   useEffect(() => {
     const updateScroll = () => {
