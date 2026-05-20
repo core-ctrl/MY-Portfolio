@@ -102,27 +102,27 @@ function ProjectModal({ project, onClose }: { project: Project; onClose: () => v
       {/* Backdrop */}
       <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" />
 
-      {/* Modal card */}
+      {/* Modal card — FIX: max-h-[90vh] + overflow-y-auto so content scrolls, not the page */}
       <motion.div
         initial={{ scale: 0.92, y: 32, opacity: 0 }}
         animate={{ scale: 1, y: 0, opacity: 1 }}
         exit={{ scale: 0.94, y: 16, opacity: 0 }}
         transition={{ type: 'spring', stiffness: 400, damping: 35 }}
         onClick={(e) => e.stopPropagation()}
-        className="relative glass rounded-3xl max-w-lg w-full overflow-hidden shadow-[0_32px_80px_rgba(0,0,0,0.6)]"
+        className="relative glass rounded-3xl max-w-lg w-full max-h-[90vh] overflow-y-auto shadow-[0_32px_80px_rgba(0,0,0,0.6)]"
         style={{ border: `1px solid ${project.color}25` }}
       >
         {/* Color gradient header */}
         <div
-          className="h-1"
+          className="h-1 sticky top-0 z-10"
           style={{ background: `linear-gradient(90deg, ${project.color}, transparent)` }}
         />
 
         <div className="p-7">
-          {/* Close */}
+          {/* FIX: sticky + float-right so close button stays visible while scrolling */}
           <button
             onClick={onClose}
-            className="absolute top-5 right-5 w-8 h-8 rounded-xl glass flex items-center justify-center text-white/40 hover:text-white/80 transition-colors"
+            className="sticky top-2 float-right ml-2 -mr-1 -mt-1 z-10 w-8 h-8 rounded-xl glass flex items-center justify-center text-white/40 hover:text-white/80 transition-colors"
             aria-label="Close"
           >
             <X size={15} />
@@ -236,7 +236,7 @@ export default function ProjectsSection() {
           </p>
         </SectionReveal>
 
-        {/* Featured project */}
+        {/* Featured projects */}
         <SectionReveal delay={100}>
           <div className="mb-6">
             {featured.map((p) => (
