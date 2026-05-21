@@ -2,56 +2,54 @@
 
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import SectionReveal from '@/components/ui/SectionReveal'
 import { siteData } from '@/lib/data'
-import { ChevronLeft, ChevronRight } from 'lucide-react'
+import { Trophy, ChevronLeft, ChevronRight } from 'lucide-react'
 
-// ── Medal Photo Carousel ───────────────────────────────────────────────────
 function MedalCarousel({ medals }: { medals: { lift: string; photo: string }[] }) {
-  const [active, setActive] = useState(0)
+  const [idx, setIdx] = useState(0)
 
   return (
-    <div className="relative">
-      {/* Main photo */}
-      <div className="relative aspect-square rounded-2xl overflow-hidden bg-surface-700">
+    <div className="relative w-full">
+      {/* Offset shadow frame */}
+      <div className="absolute inset-0 translate-x-3 translate-y-3 border border-[var(--gold)]/30 pointer-events-none" />
+
+      <div className="relative aspect-square overflow-hidden border border-[var(--gold)]/20">
         <AnimatePresence mode="wait">
           <motion.img
-            key={active}
-            src={medals[active].photo}
-            alt={`${medals[active].lift} medal`}
-            className="absolute inset-0 w-full h-full object-cover"
-            initial={{ opacity: 0, scale: 1.04 }}
+            key={idx}
+            src={medals[idx].photo}
+            alt={medals[idx].lift}
+            initial={{ opacity: 0, scale: 1.05 }}
             animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.97 }}
-            transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+            exit={{ opacity: 0, scale: 0.96 }}
+            className="absolute inset-0 w-full h-full object-cover"
           />
         </AnimatePresence>
 
-        {/* Gradient overlay */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+        {/* Gold tint */}
+        <div className="absolute inset-0 bg-[var(--gold)]/8 mix-blend-overlay pointer-events-none" />
+        <div className="absolute inset-0 bg-gradient-to-t from-[var(--black)] via-transparent to-transparent" />
 
-        {/* Lift label */}
+        {/* Lift badge */}
         <div className="absolute bottom-4 left-4">
-          <span className="text-xs font-mono px-3 py-1.5 rounded-xl bg-black/50 backdrop-blur-sm text-yellow-400 border border-yellow-500/30">
-            🥇 {medals[active].lift}
+          <span className="text-[8px] font-mono tracking-widest px-3 py-1.5 bg-[var(--black)]/90 border border-[var(--gold)]/40 text-[var(--gold)] uppercase">
+            🥇 {medals[idx].lift.toUpperCase()}
           </span>
         </div>
 
         {/* Prev / Next */}
-        <div className="absolute inset-y-0 left-2 right-2 flex items-center justify-between pointer-events-none">
-          <button
-            onClick={() => setActive((a) => (a - 1 + medals.length) % medals.length)}
-            className="pointer-events-auto w-8 h-8 rounded-full bg-black/40 backdrop-blur-sm flex items-center justify-center text-white/70 hover:text-white transition-colors"
-          >
-            <ChevronLeft size={16} />
-          </button>
-          <button
-            onClick={() => setActive((a) => (a + 1) % medals.length)}
-            className="pointer-events-auto w-8 h-8 rounded-full bg-black/40 backdrop-blur-sm flex items-center justify-center text-white/70 hover:text-white transition-colors"
-          >
-            <ChevronRight size={16} />
-          </button>
-        </div>
+        <button
+          onClick={() => setIdx(i => (i - 1 + medals.length) % medals.length)}
+          className="absolute left-3 top-1/2 -translate-y-1/2 w-8 h-8 bg-[var(--black)]/70 border border-[var(--gold)]/20 flex items-center justify-center text-[var(--cream-muted)] hover:text-[var(--gold)] transition-colors cursor-pointer z-10"
+        >
+          <ChevronLeft size={14} />
+        </button>
+        <button
+          onClick={() => setIdx(i => (i + 1) % medals.length)}
+          className="absolute right-3 top-1/2 -translate-y-1/2 w-8 h-8 bg-[var(--black)]/70 border border-[var(--gold)]/20 flex items-center justify-center text-[var(--cream-muted)] hover:text-[var(--gold)] transition-colors cursor-pointer z-10"
+        >
+          <ChevronRight size={14} />
+        </button>
       </div>
 
       {/* Thumbnails */}
@@ -59,16 +57,12 @@ function MedalCarousel({ medals }: { medals: { lift: string; photo: string }[] }
         {medals.map((m, i) => (
           <button
             key={m.lift}
-            onClick={() => setActive(i)}
-            className={`relative flex-1 aspect-square rounded-xl overflow-hidden outline-offset-2 transition-all ${i === active ? "outline outline-2 outline-amber-400" : "outline outline-2 outline-transparent"
-              }`}
+            onClick={() => setIdx(i)}
+            className={`flex-1 aspect-square overflow-hidden border transition-all cursor-pointer ${
+              i === idx ? 'border-[var(--gold)]' : 'border-[var(--gold)]/15 opacity-50 hover:opacity-80'
+            }`}
           >
-            <img
-              src={m.photo}
-              alt={m.lift}
-              className={`w-full h-full object-cover transition-all duration-200 ${i === active ? 'opacity-100' : 'opacity-40 hover:opacity-70'
-                }`}
-            />
+            <img src={m.photo} alt={m.lift} className="w-full h-full object-cover" />
           </button>
         ))}
       </div>
@@ -76,112 +70,106 @@ function MedalCarousel({ medals }: { medals: { lift: string; photo: string }[] }
   )
 }
 
-// ── AchievementsSection ────────────────────────────────────────────────────
 export default function AchievementsSection() {
   return (
-    <section id="achievements" className="relative py-32 px-6 overflow-hidden">
+    <section id="achievements" className="relative py-32 px-6 bg-[var(--black)] border-t border-[var(--gold)]/10 overflow-hidden">
+
+      {/* Background word */}
       <div
-        className="glow-blob w-[400px] h-[400px] bottom-0 left-1/2 -translate-x-1/2"
-        style={{ background: 'radial-gradient(circle, rgba(245,158,11,0.08), transparent)' }}
-        aria-hidden="true"
-      />
+        className="absolute -bottom-8 right-0 pointer-events-none select-none opacity-[0.03]"
+        style={{ fontFamily: 'var(--font-hero)', fontSize: 'clamp(80px, 18vw, 260px)', lineHeight: 1, color: 'var(--cream)', whiteSpace: 'nowrap' }}
+      >
+        CHAMPION
+      </div>
 
-      <div className="max-w-6xl mx-auto">
-        <SectionReveal>
-          <p className="text-xs font-mono tracking-[0.3em] text-brand-400 uppercase mb-4">
-            — Achievements
-          </p>
-        </SectionReveal>
+      <div className="max-w-screen-xl mx-auto relative z-10">
 
-        <SectionReveal delay={80}>
-          <h2
-            className="text-4xl md:text-5xl lg:text-6xl leading-tight mb-14 max-w-xl"
-            style={{ fontFamily: 'var(--font-display)', fontWeight: 300 }}
-          >
-            <span className="text-white/90">Beyond the</span>
-            <br />
-            <em className="gradient-text not-italic">screen</em>
-          </h2>
-        </SectionReveal>
+        {/* Header */}
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.8 }}
+          className="mb-20"
+        >
+          <div className="flex items-center gap-3 mb-4">
+            <div className="w-6 h-px bg-[var(--gold)]" />
+            <span className="text-[10px] font-mono tracking-[0.4em] text-[var(--gold)] uppercase">Physical Discipline</span>
+          </div>
+          <div style={{ fontFamily: 'var(--font-hero)', fontSize: 'clamp(48px, 8vw, 110px)', lineHeight: 0.9 }}>
+            <div className="text-[var(--cream)]">DISTRICT</div>
+            <div style={{ color: 'transparent', WebkitTextStroke: '1.5px var(--gold)' }}>CHAMPION</div>
+          </div>
+        </motion.div>
 
-        {siteData.achievements.map((achievement) => (
-          <div key={achievement.title} className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
+        {siteData.achievements.map(a => (
+          <div key={a.title} className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
 
-            {/* Left — medal photo carousel */}
-            <SectionReveal delay={100}>
-              <MedalCarousel medals={achievement.medals} />
-            </SectionReveal>
-
-            {/* Right — achievement details */}
-            <SectionReveal delay={140}>
+            {/* Left — photo carousel */}
+            <div className="lg:col-span-5">
               <motion.div
-                whileHover={{ y: -2 }}
-                className="relative glass rounded-3xl p-8 overflow-hidden h-full"
-                style={{ border: `1px solid ${achievement.color}25` }}
+                initial={{ opacity: 0, x: -40 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.9 }}
               >
-                {/* Color accent line */}
-                <div
-                  className="absolute top-0 left-0 right-0 h-0.5"
-                  style={{ background: `linear-gradient(90deg, ${achievement.color}, transparent)` }}
-                />
+                <MedalCarousel medals={a.medals} />
+              </motion.div>
+            </div>
 
-                {/* Glow */}
-                <div
-                  className="absolute top-0 right-0 w-48 h-48 pointer-events-none"
-                  style={{ background: `radial-gradient(circle, ${achievement.color}10, transparent)` }}
-                />
+            {/* Right — details */}
+            <div className="lg:col-span-7">
+              <motion.div
+                initial={{ opacity: 0, x: 40 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.9, delay: 0.15 }}
+                className="border border-[var(--gold)]/15 p-8 md:p-10 relative"
+              >
+                <div className="absolute top-3 left-4 text-[8px] font-mono text-[var(--gold)]/30 tracking-widest">[ RECORD FILE ]</div>
 
-                {/* Header */}
-                <div className="flex items-start justify-between mb-6">
-                  <span className="text-5xl">{achievement.icon}</span>
-                  <span className="text-xs font-mono text-white/30 bg-white/5 px-3 py-1.5 rounded-full">
-                    {achievement.date}
+                <div className="flex justify-between items-start mb-8">
+                  <span className="text-[9px] font-mono tracking-widest text-[var(--gold)] border border-[var(--gold)]/30 px-3 py-1 uppercase">
+                    {a.date.toUpperCase()}
                   </span>
                 </div>
 
-                <h3
-                  className="text-3xl mb-2"
-                  style={{ fontFamily: 'var(--font-display)', fontWeight: 400, color: achievement.color }}
+                <div
+                  style={{ fontFamily: 'var(--font-hero)', fontSize: 'clamp(28px, 4vw, 52px)', lineHeight: 0.9, color: 'var(--cream)' }}
+                  className="mb-3"
                 >
-                  {achievement.title}
-                </h3>
-                <p className="text-sm text-white/50 font-mono mb-5">{achievement.subtitle}</p>
-                <p className="text-sm text-white/55 leading-relaxed mb-8">{achievement.description}</p>
+                  {a.title}
+                </div>
+                <p className="text-[10px] font-mono text-[var(--gold)]/70 tracking-widest uppercase mb-6 border-l border-[var(--gold)]/30 pl-3">
+                  {a.subtitle}
+                </p>
 
-                {/* Three lift medals */}
-                <div className="space-y-3">
-                  <p className="text-[10px] font-mono tracking-widest text-white/25 uppercase">
-                    Gold in all three lifts
-                  </p>
-                  {achievement.medals.map((medal, i) => (
-                    <motion.div
-                      key={medal.lift}
-                      initial={{ opacity: 0, x: -12 }}
-                      whileInView={{ opacity: 1, x: 0 }}
-                      viewport={{ once: true }}
-                      transition={{ delay: i * 0.1 + 0.2 }}
-                      className="flex items-center gap-3"
-                    >
-                      <div
-                        className="w-1.5 h-1.5 rounded-full"
-                        style={{ background: achievement.color, boxShadow: `0 0 6px ${achievement.color}` }}
-                      />
-                      <span className="text-sm text-white/70">🥇 {medal.lift}</span>
-                    </motion.div>
-                  ))}
+                <p className="text-[var(--cream-dim)] text-sm leading-8 mb-10">{a.description}</p>
+
+                {/* Medal grid */}
+                <div className="border-t border-[var(--gold)]/15 pt-8">
+                  <p className="text-[9px] font-mono tracking-widest text-[var(--gold)]/60 uppercase mb-5">Lifts Secured</p>
+                  <div className="grid grid-cols-3 gap-3">
+                    {a.medals.map(m => (
+                      <div key={m.lift} className="border border-[var(--gold)]/20 p-4 hover:border-[var(--gold)]/50 transition-colors">
+                        <Trophy size={12} className="text-[var(--gold)] mb-2" />
+                        <p className="text-[9px] font-mono text-[var(--cream-dim)] uppercase tracking-wider">{m.lift}</p>
+                        <p className="text-[8px] font-mono text-[var(--gold)]/50 mt-1">GOLD</p>
+                      </div>
+                    ))}
+                  </div>
                 </div>
 
-                {/* Discipline quote */}
-                <div className="mt-8 pt-6 border-t border-white/5">
-                  <p
-                    className="text-lg leading-snug text-white/40"
-                    style={{ fontFamily: 'var(--font-display)', fontStyle: 'italic', fontWeight: 300 }}
-                  >
-                    "The bar doesn't care about excuses."
+                {/* Quote */}
+                <div className="border-t border-[var(--gold)]/15 pt-8 mt-8 flex gap-4">
+                  <span className="text-[var(--gold)]/40 font-serif text-4xl leading-none">"</span>
+                  <p className="text-xs text-[var(--cream-muted)] italic leading-7">
+                    The iron never lies to you. 200kg will always be 200kg. That objective feedback mirrors code — it either works or it breaks.
                   </p>
                 </div>
               </motion.div>
-            </SectionReveal>
+            </div>
+
           </div>
         ))}
       </div>

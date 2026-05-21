@@ -4,37 +4,52 @@ import { motion } from 'framer-motion'
 import { siteData } from '@/lib/data'
 import { Github, Instagram, Linkedin, Mail } from 'lucide-react'
 
+const MARQUEE = 'SAI HARSHITHA ✦ CREATIVE DEVELOPER ✦ CYBERSECURITY ✦ POWERLIFTER ✦ DISTRICT GOLD ✦ KL UNIVERSITY ✦ '
+
 export default function Footer() {
   const year = new Date().getFullYear()
 
   return (
-    <footer className="relative border-t border-white/5 py-12 px-6 overflow-hidden">
-      {/* Subtle glow */}
-      <div
-        className="absolute bottom-0 left-1/2 -translate-x-1/2 w-96 h-32 opacity-10 pointer-events-none"
-        style={{ background: 'radial-gradient(ellipse, #6a50ff, transparent)' }}
-      />
+    <footer className="relative border-t border-[var(--gold)]/15 bg-[var(--black)] overflow-hidden select-none">
 
-      <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
-        <div className="text-center md:text-left">
+      {/* Big scrolling name marquee */}
+      <div className="w-full overflow-hidden py-4 border-b border-[var(--gold)]/10">
+        <div className="marquee-container">
+          <div className="marquee-content gap-0">
+            {Array.from({ length: 3 }).map((_, i) => (
+              <span
+                key={i}
+                style={{ fontFamily: 'var(--font-hero)', fontSize: 'clamp(48px, 10vw, 120px)' }}
+                className="whitespace-nowrap text-[var(--cream)]/5 tracking-tight leading-none pr-8"
+              >
+                {MARQUEE}
+              </span>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      <div className="max-w-screen-xl mx-auto px-8 py-12 flex flex-col md:flex-row items-start md:items-center justify-between gap-8">
+        {/* Name + tagline */}
+        <div>
           <p
-            className="text-lg gradient-text-warm"
-            style={{ fontFamily: 'var(--font-display)', fontWeight: 300 }}
+            style={{ fontFamily: 'var(--font-hero)', fontSize: 'clamp(28px, 4vw, 52px)', lineHeight: 1 }}
+            className="text-[var(--cream)] tracking-tight uppercase"
           >
-            Parupalli Sai Harshitha
+            Sai Harshitha
           </p>
-          <p className="text-xs text-white/30 mt-1 font-mono tracking-wide">
-            Code · Creativity · Discipline
+          <p className="text-[10px] font-mono text-[var(--cream-muted)] tracking-[0.3em] uppercase mt-2">
+            Systems &amp; Creativity Intersected
           </p>
         </div>
 
-        {/* Social icons */}
-        <div className="flex items-center gap-3">
+        {/* Socials */}
+        <div className="flex items-center gap-4">
           {[
-            { icon: Github, href: siteData.contact.github, label: 'GitHub' },
-            { icon: Linkedin, href: siteData.contact.linkedin, label: 'LinkedIn' },
-            { icon: Instagram, href: siteData.contact.instagram_edit, label: 'Instagram' },
-            { icon: Mail, href: `mailto:${siteData.contact.email}`, label: 'Email' },
+            { icon: Github,    href: siteData.contact.github,           label: 'GitHub' },
+            { icon: Linkedin,  href: siteData.contact.linkedin,         label: 'LinkedIn' },
+            { icon: Instagram, href: siteData.contact.instagram_edit,   label: 'Instagram' },
+            { icon: Mail,      href: `mailto:${siteData.contact.email}`, label: 'Email' },
           ].map(({ icon: Icon, href, label }) => (
             <motion.a
               key={label}
@@ -42,17 +57,16 @@ export default function Footer() {
               target={href.startsWith('http') ? '_blank' : undefined}
               rel="noopener noreferrer"
               aria-label={label}
-              whileHover={{ scale: 1.1, y: -2 }}
-              whileTap={{ scale: 0.95 }}
-              className="w-9 h-9 rounded-xl glass flex items-center justify-center text-white/40 hover:text-white/80 hover:border-brand-500/30 transition-colors"
+              whileHover={{ y: -3 }}
+              className="w-10 h-10 border border-[var(--gold)]/20 flex items-center justify-center text-[var(--cream-muted)] hover:text-[var(--gold)] hover:border-[var(--gold)]/50 transition-all duration-200"
             >
-              <Icon size={16} />
+              <Icon size={14} />
             </motion.a>
           ))}
         </div>
 
-        <p className="text-xs text-white/20 font-mono">
-          © {year} — Built with Next.js & ❤
+        <p className="text-[9px] font-mono text-[var(--cream-muted)] tracking-widest uppercase">
+          © {year} Sai Harshitha
         </p>
       </div>
     </footer>

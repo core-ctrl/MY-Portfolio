@@ -1,240 +1,282 @@
 'use client'
 
-import { useEffect, useRef } from 'react'
-import { motion, useMotionValue, useSpring } from 'framer-motion'
-import { siteData } from '@/lib/data'
-import { ArrowDown, Github, Linkedin, Instagram } from 'lucide-react'
+import { useEffect, useRef, useState } from 'react'
+import { motion, useMotionValue, useSpring, useScroll, useTransform } from 'framer-motion'
+import { ArrowDown } from 'lucide-react'
 
-// ── HeroSection ────────────────────────────────────────────────────────────
-// Full-viewport landing section with:
-//   - Mouse-follow gradient (subtle radial that tracks cursor)
-//   - Animated background blobs
-//   - Staggered text entrance (display → subtitle → bio → CTAs)
-//   - Floating UI chip elements
-//   - Parallax grid background
+const ROLES = ['POWERLIFTER', 'DEVELOPER', 'CREATOR', 'SAI HARSHITHA']
+const ROLE_DURATION = 600
+
+function useViewportFontSize(text: string, padPx = 32) {
+  const ref = useRef<HTMLDivElement>(null)
+  const [size, setSize] = useState('18vw')
+
+  useEffect(() => {
+    const calc = () => {
+      if (!ref.current) return
+      const parent = ref.current.parentElement!
+      const availW = parent.clientWidth - padPx * 2
+      const testSize = 100
+      ref.current.style.fontSize = `${testSize}px`
+      const natural = ref.current.scrollWidth
+      if (!natural) return
+      const px = (availW / natural) * testSize
+      setSize(`${px}px`)
+    }
+    calc()
+    window.addEventListener('resize', calc)
+    const t = setTimeout(calc, 100)
+    return () => {
+      window.removeEventListener('resize', calc)
+      clearTimeout(t)
+    }
+  }, [text, padPx])
+
+  return { ref, size }
+}
+
+function BackgroundParticles() {
+  const [elements, setElements] = useState<{ id: number; x: number; y: number; size: number; duration: number; type: number }[]>([])
+  
+  useEffect(() => {
+    const arr = Array.from({ length: 25 }).map((_, i) => ({
+      id: i,
+      x: Math.random() * 100,
+      y: Math.random() * 100,
+      size: Math.random() * 20 + 5,
+      duration: Math.random() * 20 + 20,
+      type: Math.floor(Math.random() * 3)
+    }))
+    setElements(arr)
+  }, [])
+
+  return (
+    <div className="absolute inset-0 overflow-hidden pointer-events-none z-0 opacity-40">
+      {elements.map((el) => (
+        <motion.div
+          key={el.id}
+          className="absolute text-[var(--gold)]/30 flex items-center justify-center"
+          style={{ left: `${el.x}%`, top: `${el.y}%`, width: el.size, height: el.size }}
+          animate={{
+            y: [0, -400],
+            rotate: el.type === 1 ? [0, 180] : [0, 90],
+            opacity: [0, 0.8, 0],
+          }}
+          transition={{
+            duration: el.duration,
+            repeat: Infinity,
+            ease: 'linear',
+          }}
+        >
+          {el.type === 0 && <div className="w-1 h-1 rounded-full bg-current" />}
+          {el.type === 1 && <span className="text-xs font-mono">+</span>}
+          {el.type === 2 && <div className="w-2 h-2 border border-current" />}
+        </motion.div>
+      ))}
+    </div>
+  )
+}
+
 export default function HeroSection() {
   const containerRef = useRef<HTMLDivElement>(null)
 
-  // Mouse-follow gradient position
-  const mouseX = useMotionValue(0)
-  const mouseY = useMotionValue(0)
-  const springX = useSpring(mouseX, { stiffness: 60, damping: 20 })
-  const springY = useSpring(mouseY, { stiffness: 60, damping: 20 })
+  const [roleIdx, setRoleIdx] = useState(0)
+  const [phase, setPhase] = useState(0) // 0 = animating, 1 = completed
+  const [ready, setReady] = useState(false)
+
+  // Scroll parallax
+  const { scrollYProgress } = useScroll({ target: containerRef, offset: ['start start', 'end start'] })
+  const yHero = useTransform(scrollYProgress, [0, 1], ['0%', '40%'])
+  const opacityHero = useTransform(scrollYProgress, [0, 0.8], [1, 0])
+  const scaleHero = useTransform(scrollYProgress, [0, 1], [1, 0.95])
+
+  // Mouse parallax for ambient glow
+  const mx = useMotionValue(0)
+  const my = useMotionValue(0)
+  const sx = useSpring(mx, { stiffness: 40, damping: 18 })
+  const sy = useSpring(my, { stiffness: 40, damping: 18 })
+
+  // Dynamic font sizing
+  const { ref: nameRef, size: nameFontSize } = useViewportFontSize('SAI HARSHITHA', 32)
+
+  useEffect(() => {
+    const delay = setTimeout(() => {
+      setReady(true)
+      let idx = 0
+      const cycle = setInterval(() => {
+        idx++
+        if (idx < ROLES.length) {
+          setRoleIdx(idx)
+        } else {
+          clearInterval(cycle)
+          setPhase(1)
+        }
+      }, ROLE_DURATION)
+    }, 200)
+    return () => clearTimeout(delay)
+  }, [])
 
   useEffect(() => {
     const onMove = (e: MouseEvent) => {
-      const rect = containerRef.current?.getBoundingClientRect()
-      if (!rect) return
-      mouseX.set(e.clientX - rect.left)
-      mouseY.set(e.clientY - rect.top)
+      if (!containerRef.current) return
+      const { width, height } = containerRef.current.getBoundingClientRect()
+      mx.set((e.clientX / width - 0.5) * 40)
+      my.set((e.clientY / height - 0.5) * 30)
     }
-    window.addEventListener('mousemove', onMove)
+    window.addEventListener('mousemove', onMove, { passive: true })
     return () => window.removeEventListener('mousemove', onMove)
-  }, [mouseX, mouseY])
-
-  const stagger = {
-    container: {
-      hidden: {},
-      show: { transition: { staggerChildren: 0.12, delayChildren: 0.4 } },
-    },
-    item: {
-      hidden: { opacity: 0, y: 32 },
-      show: { opacity: 1, y: 0, transition: { duration: 0.8, ease: [0.16, 1, 0.3, 1] } },
-    },
-  }
+  }, [mx, my])
 
   return (
     <section
       id="hero"
       ref={containerRef}
-      className="relative min-h-screen flex flex-col items-center justify-center overflow-hidden px-6 grid-bg"
+      className="relative min-h-screen w-full overflow-hidden bg-[var(--black)]"
     >
-      {/* Mouse-follow radial glow */}
-      <motion.div
-        className="pointer-events-none absolute inset-0 opacity-20"
-        style={{
-          background: 'transparent',
-        }}
-      />
-      <motion.div
-        className="pointer-events-none absolute w-[600px] h-[600px] rounded-full opacity-[0.07]"
-        style={{
-          background: 'radial-gradient(circle, #6a50ff, transparent 70%)',
-          x: springX,
-          y: springY,
-          translateX: '-50%',
-          translateY: '-50%',
-        }}
-      />
+      <BackgroundParticles />
 
-      {/* Static ambient blobs */}
-      <div
-        className="glow-blob w-[500px] h-[500px] bg-brand-600 top-1/4 right-[-100px]"
-        aria-hidden="true"
-      />
-      <div
-        className="glow-blob w-[400px] h-[400px] bg-accent-600 bottom-1/4 left-[-80px]"
-        aria-hidden="true"
-        style={{ animationDelay: '2s' }}
-      />
-
-      {/* Content */}
       <motion.div
-        variants={stagger.container}
-        initial="hidden"
-        animate="show"
-        className="relative z-10 max-w-4xl mx-auto text-center"
+        style={{ y: yHero, opacity: opacityHero, scale: scaleHero }}
+        className="absolute inset-0 flex flex-col justify-between"
       >
-        {/* Eyebrow tag */}
-        <motion.div variants={stagger.item} className="flex justify-center mb-6">
-          <span className="tag-pill">
-            ✦ Available for freelance & collaboration
+        <motion.div
+          className="pointer-events-none absolute inset-0 z-0"
+          style={{ x: sx, y: sy }}
+        >
+          <div
+            className="absolute top-1/3 left-1/4 w-[700px] h-[700px] rounded-full"
+            style={{ background: 'radial-gradient(circle, rgba(201,166,107,0.06) 0%, transparent 65%)' }}
+          />
+          <div
+            className="absolute bottom-1/4 right-1/4 w-[400px] h-[400px] rounded-full"
+            style={{ background: 'radial-gradient(circle, rgba(201,166,107,0.04) 0%, transparent 70%)' }}
+          />
+        </motion.div>
+
+        {/* ── TOP META ── */}
+        <motion.div
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 0.2 }}
+          className="relative z-10 px-6 md:px-8 pt-28 flex justify-between items-start"
+        >
+          <div className="flex flex-col gap-2">
+            <div className="flex items-center gap-3">
+              <div className="border border-[var(--gold)]/40 px-3 py-1 flex items-center justify-center bg-[var(--black)]/50 backdrop-blur-sm">
+                <span className="text-[9px] font-mono tracking-[0.3em] text-[var(--gold)] uppercase">
+                  [ SAI HARSHITHA ]
+                </span>
+              </div>
+            </div>
+            <span className="text-[9px] font-mono tracking-[0.3em] text-[var(--cream-muted)] uppercase">KL University · AP, India</span>
+          </div>
+          <div className="text-right">
+            <span className="text-[9px] font-mono tracking-[0.3em] text-[var(--cream-muted)] uppercase">Est. 2024</span>
+          </div>
+        </motion.div>
+
+        {/* ── MAIN TYPOGRAPHY STAGE ── */}
+        <div className="relative z-10 flex-1 flex flex-col items-center justify-center px-4 md:px-8 overflow-hidden pointer-events-none">
+          
+          {ready && (
+            <div className="absolute w-full px-4 md:px-8 flex justify-center pointer-events-auto overflow-hidden">
+              <motion.div
+                initial={{ y: '120%', filter: 'blur(8px)' }}
+                animate={{ y: '0%', filter: 'blur(0px)' }}
+                transition={{ duration: 2.4, ease: [0.16, 1, 0.3, 1] }}
+                style={{
+                  fontFamily: 'var(--font-hero)',
+                  fontSize: nameFontSize,
+                  lineHeight: 0.88,
+                  letterSpacing: '-0.02em',
+                  whiteSpace: 'nowrap',
+                  width: '100%',
+                  textAlign: 'center'
+                }}
+                className="group cursor-default"
+              >
+                {roleIdx < 3 ? (
+                  <div
+                    style={{
+                      color: 'transparent',
+                      WebkitTextStroke: 'max(1.5px, 0.2vw) rgba(201,166,107,0.5)',
+                    }}
+                  >
+                    {ROLES[roleIdx]}
+                  </div>
+                ) : (
+                  <div className="relative inline-block w-full">
+                    {/* Back layer */}
+                    <div 
+                      className="absolute inset-0 flex justify-center items-center pointer-events-none group-hover:blur-sm transition-all duration-700"
+                      style={{ color: 'transparent', WebkitTextStroke: 'max(1.5px, 0.2vw) rgba(201,166,107,0.4)' }}
+                    >
+                      SAI HARSHITHA
+                    </div>
+                    {/* Front interactive layer */}
+                    <div 
+                      className="relative z-10 flex justify-center items-center overflow-hidden"
+                      style={{ color: 'var(--cream)', transition: 'color 0.5s ease' }}
+                    >
+                      {Array.from("SAI HARSHITHA").map((char, i) => (
+                        <motion.span
+                          key={i}
+                          whileHover={{ 
+                            y: -10, 
+                            color: 'var(--gold)',
+                            transition: { duration: 0.1 }
+                          }}
+                          className="inline-block transition-colors duration-500"
+                          style={char === ' ' ? { width: '0.2em' } : {}}
+                        >
+                          {char}
+                        </motion.span>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </motion.div>
+            </div>
+          )}
+
+          <span ref={nameRef} style={{ visibility: 'hidden', position: 'absolute', whiteSpace: 'nowrap', fontFamily: 'var(--font-hero)' }}>
+            SAI HARSHITHA
           </span>
-        </motion.div>
+        </div>
 
-        {/* Main heading */}
-        <motion.h1
-          variants={stagger.item}
-          className="text-5xl md:text-7xl lg:text-8xl leading-[0.92] tracking-tight mb-6"
-          style={{ fontFamily: 'var(--font-display)', fontWeight: 300 }}
-        >
-          <span className="text-white/90">Sai</span>
-          <br />
-          <em className="gradient-text not-italic">Harshitha</em>
-        </motion.h1>
-
-        {/* Role tags */}
+        {/* ── BOTTOM BAR ── */}
         <motion.div
-          variants={stagger.item}
-          className="flex flex-wrap justify-center gap-2 mb-7"
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: phase === 1 ? 1 : 0, y: phase === 1 ? 0 : 10 }}
+          transition={{ duration: 0.8, delay: 0.2 }}
+          className="relative z-20 px-6 md:px-8 py-8 flex flex-col sm:flex-row justify-between items-start sm:items-end gap-6 pointer-events-auto"
         >
-          {['Full-Stack Developer', 'Video Editor', 'Powerlifter'].map((role) => (
-            <span
-              key={role}
-              className="px-3 py-1 rounded-full text-xs font-mono tracking-wider border border-white/10 text-white/50 bg-white/3"
+          <p className="text-sm text-[var(--cream-dim)] max-w-xs leading-relaxed">
+            Building cinematic digital experiences at the intersection of{' '}
+            <span className="font-serif italic text-lg lowercase tracking-normal text-[var(--gold)]">code</span>,{' '}
+            <span className="font-serif italic text-lg lowercase tracking-normal text-[var(--gold)]">security</span> &{' '}
+            <span className="font-serif italic text-lg lowercase tracking-normal text-[var(--gold)]">discipline</span>.
+          </p>
+
+          <div className="flex items-center gap-6">
+            <button
+              onClick={() => document.getElementById('about')?.scrollIntoView({ behavior: 'smooth' })}
+              className="group flex items-center gap-3 text-[10px] font-mono tracking-[0.25em] uppercase text-[var(--cream-muted)] hover:text-[var(--gold)] transition-colors"
             >
-              {role}
-            </span>
-          ))}
-        </motion.div>
+              <span className="w-10 h-px bg-current group-hover:w-16 transition-all duration-300" />
+              Scroll
+              <motion.span animate={{ y: [0, 4, 0] }} transition={{ duration: 1.6, repeat: Infinity }}>
+                <ArrowDown size={11} />
+              </motion.span>
+            </button>
 
-        {/* Bio */}
-        <motion.p
-          variants={stagger.item}
-          className="text-base md:text-lg text-white/50 max-w-xl mx-auto leading-relaxed mb-10"
-          style={{ fontFamily: 'var(--font-body)' }}
-        >
-          {siteData.bio}
-        </motion.p>
-
-        {/* CTAs */}
-        <motion.div
-          variants={stagger.item}
-          className="flex flex-wrap gap-3 justify-center"
-        >
-          <motion.button
-            onClick={() => document.getElementById('projects')?.scrollIntoView({ behavior: 'smooth' })}
-            whileHover={{ scale: 1.03 }}
-            whileTap={{ scale: 0.97 }}
-            className="magnetic relative px-6 py-3 rounded-xl text-sm font-medium text-white overflow-hidden group"
-            style={{ background: 'linear-gradient(135deg, #6a50ff, #4f3acc)' }}
-          >
-            {/* Shimmer sweep on hover */}
-            <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700" />
-            <span className="relative">View Projects →</span>
-          </motion.button>
-
-          <motion.a
-            href={`mailto:${siteData.contact.email}`}
-            whileHover={{ scale: 1.03 }}
-            whileTap={{ scale: 0.97 }}
-            className="magnetic px-6 py-3 rounded-xl text-sm font-medium text-white/70 glass border border-white/10 hover:border-brand-500/40 hover:text-white transition-all"
-          >
-            Get In Touch
-          </motion.a>
-        </motion.div>
-
-        {/* Social row */}
-        <motion.div
-          variants={stagger.item}
-          className="flex items-center justify-center gap-4 mt-10"
-        >
-          {[
-            { icon: Github, href: siteData.contact.github, label: 'GitHub' },
-            { icon: Linkedin, href: siteData.contact.linkedin, label: 'LinkedIn' },
-            { icon: Instagram, href: siteData.contact.instagram_edit, label: 'Instagram' },
-          ].map(({ icon: Icon, href, label }) => (
-            <motion.a
-              key={label}
-              href={href}
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label={label}
-              whileHover={{ y: -3, scale: 1.1 }}
-              className="w-10 h-10 rounded-xl glass flex items-center justify-center text-white/30 hover:text-white/70 transition-colors"
+            <a
+              href="#contact"
+              className="px-6 py-3 bg-[var(--gold)] text-[var(--black)] text-[10px] font-mono font-bold tracking-[0.2em] uppercase hover:bg-[var(--gold-light)] transition-transform hover:scale-105 active:scale-95 block"
             >
-              <Icon size={17} />
-            </motion.a>
-          ))}
-        </motion.div>
-      </motion.div>
-
-      {/* Floating chips — desktop only */}
-      <div className="hidden lg:block" aria-hidden="true">
-        <motion.div
-          className="absolute top-32 left-12 glass rounded-2xl px-4 py-3 float-1"
-          initial={{ opacity: 0, x: -30 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ delay: 1.2, duration: 0.8 }}
-        >
-          <p className="text-xs text-white/40 font-mono mb-0.5">Stack</p>
-          <p className="text-sm text-white/80">React · AWS · SQL</p>
-        </motion.div>
-
-        <motion.div
-          className="absolute top-48 right-16 glass rounded-2xl px-4 py-3 float-2"
-          initial={{ opacity: 0, x: 30 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ delay: 1.4, duration: 0.8 }}
-        >
-          <p className="text-xs text-white/40 font-mono mb-0.5">Achievement</p>
-          <p className="text-sm text-white/80">🏅 District Gold — Powerlifting</p>
-        </motion.div>
-
-        <motion.div
-          className="absolute bottom-40 left-20 glass rounded-2xl px-4 py-3 float-3"
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 1.6, duration: 0.8 }}
-        >
-          <p className="text-xs text-white/40 font-mono mb-0.5">University</p>
-          <p className="text-sm text-white/80">KL University — B.Tech CS&IT</p>
-        </motion.div>
-
-        <motion.div
-          className="absolute bottom-56 right-24 glass rounded-2xl px-4 py-3 float-1"
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 1.8, duration: 0.8 }}
-        >
-          <p className="text-xs text-white/40 font-mono mb-0.5">Clients</p>
-          <p className="text-sm text-white/80">6+ brands served</p>
-        </motion.div>
-      </div>
-
-      {/* Scroll indicator */}
-      <motion.div
-        className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-white/30"
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 2.2, duration: 0.6 }}
-      >
-        <span className="text-[10px] font-mono tracking-[0.3em] uppercase">Scroll</span>
-        <motion.div
-          animate={{ y: [0, 6, 0] }}
-          transition={{ repeat: Infinity, duration: 1.8, ease: 'easeInOut' }}
-        >
-          <ArrowDown size={14} />
+              Hire Me
+            </a>
+          </div>
         </motion.div>
       </motion.div>
     </section>

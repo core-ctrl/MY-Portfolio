@@ -4,9 +4,7 @@ const nextConfig: NextConfig = {
   images: {
     domains: [],
   },
-  experimental: {
-    optimizeCss: true,
-  },
+  experimental: {},
 }
 
 export default nextConfig

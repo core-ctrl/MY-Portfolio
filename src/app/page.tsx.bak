@@ -1,7 +1,8 @@
 'use client'
 
 import { useEffect } from 'react'
-
+import LoadingScreen from '@/components/layout/LoadingScreen'
+import CustomCursor from '@/components/layout/CustomCursor'
 import ScrollProgress from '@/components/layout/ScrollProgress'
 import Navbar from '@/components/layout/Navbar'
 import HeroSection from '@/components/sections/HeroSection'
@@ -13,39 +14,35 @@ import AchievementsSection from '@/components/sections/AchievementsSection'
 import ContactSection from '@/components/sections/ContactSection'
 import Footer from '@/components/layout/Footer'
 
+
+
 export default function HomePage() {
   useEffect(() => {
-    const update = () => {
-      const st = window.scrollY
-      const dh = document.documentElement.scrollHeight - window.innerHeight
-      document.documentElement.style.setProperty(
-        '--scroll-progress',
-        String(dh > 0 ? st / dh : 0)
-      )
+    const updateScroll = () => {
+      const scrollTop = window.scrollY
+      const docHeight = document.documentElement.scrollHeight - window.innerHeight
+      const progress = docHeight > 0 ? scrollTop / docHeight : 0
+      document.documentElement.style.setProperty('--scroll-progress', String(progress))
     }
-    window.addEventListener('scroll', update, { passive: true })
-    return () => window.removeEventListener('scroll', update)
+    window.addEventListener('scroll', updateScroll, { passive: true })
+    return () => window.removeEventListener('scroll', updateScroll)
   }, [])
 
   return (
     <>
-      {/* Procedural grain overlay */}
-      <div className="grain-overlay" aria-hidden />
-
-
+      <LoadingScreen />
+      <CustomCursor />
       <ScrollProgress />
       <Navbar />
-
       <main>
         <HeroSection />
         <AboutSection />
         <ProjectsSection />
-        <VideoSection limit={5} />
+        <VideoSection />
         <SkillsSection />
         <AchievementsSection />
         <ContactSection />
       </main>
-
       <Footer />
     </>
   )

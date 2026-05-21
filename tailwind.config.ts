@@ -15,6 +15,7 @@ const config: Config = {
         // Body: clean, modern
         body: ['var(--font-body)', 'sans-serif'],
         mono: ['var(--font-mono)', 'monospace'],
+        serif: ['"Playfair Display"', 'serif'],
       },
       colors: {
         // Primary brand — electric violet-indigo

@@ -1,6 +1,47 @@
 // ── Site Data ──────────────────────────────────────────────────────────────
 // Edit this file to update all content across the portfolio.
 
+// ...rest of your data
+export type EducationItem = {
+  institution: string
+  degree: string
+  period: string
+  grade?: string
+  current: boolean
+  logo: string
+}
+
+export type ClientItem = {
+  name: string
+  role: string
+  type: string
+  period: string
+}
+
+export type VideoWork = {
+  id: number
+  title: string
+  client: string
+  year: number
+  tool: string
+  category: string
+  isYouTube: boolean
+  video: string
+  thumbnail: string
+}
+
+type Achievement = {
+  title: string
+  subtitle: string
+  date: string
+  icon: string
+  color: string
+  description: string
+  medals: { lift: string; photo: string }[]
+}
+
+
+
 export const siteData = {
   name: 'Sai Harshitha',
   fullName: 'Parupalli Sai Harshitha',
@@ -9,10 +50,18 @@ export const siteData = {
   location: 'Andhra Pradesh, India',
   university: 'KL University',
 
+  discord: {
+    userId: '1446545846244999178',
+    guildId: '6Th5RPWF4p',
+  },
+
+
   photos: {
     primary: 'https://res.cloudinary.com/dkrvtfbor/image/upload/v1775338145/IMG_20260405_025506_s0ne5r.jpg',
     secondary: 'https://res.cloudinary.com/dkrvtfbor/image/upload/v1775338145/IMG_20260405_025506_s0ne5r.jpg',
   },
+
+
 
   contact: {
     email: 'Parupallisaiharshitha@gmail.com',
@@ -37,7 +86,6 @@ export const siteData = {
       institution: 'Sri Chaitanya Educational Institutions',
       degree: 'Class 11 & 12 — State Board (MPC)',
       period: '2020 – 2022',
-
       current: false,
       logo: 'https://lookaside.fbsbx.com/lookaside/crawler/media/?media_id=100065094917919',
     },
@@ -48,7 +96,7 @@ export const siteData = {
       current: false,
       logo: 'https://play-lh.googleusercontent.com/M52Gtwlv_N9oO_NrEURHwA-ES0Ya-3cu3Cv4TlNkSXwvuRQ18LxxRECYQWu6lnaPCFuqC3kq60hM-hVhfMrrHbY',
     },
-  ],
+  ] as EducationItem[],
 
   // ── Skills — categorised ───────────────────
   skills: {
@@ -65,12 +113,14 @@ export const siteData = {
     backend: [
       'Node.js',
       'REST APIs',
-      'MongoDB',
       'JWT Auth',
       'Firebase',
-      'SQL',
       'Spring Boot',
       'Maven',
+    ],
+    database: [
+      'MongoDB',
+      'SQL',
     ],
     cloud: [
       'Docker',
@@ -91,29 +141,29 @@ export const siteData = {
 
   // All skills for marquee display
   allSkills: [
-    { name: 'React', icon: '⚛️', color: '#61dafb' },
-    { name: 'React Native', icon: '📱', color: '#61dafb' },
-    { name: 'Next.js 14', icon: '▲', color: '#ffffff' },
-    { name: 'JavaScript', icon: 'JS', color: '#f7df1e' },
-    { name: 'TypeScript', icon: 'TS', color: '#3178c6' },
-    { name: 'Redux Toolkit', icon: '🔄', color: '#764abc' },
-    { name: 'Tailwind CSS', icon: '🎨', color: '#38bdf8' },
-    { name: 'Framer Motion', icon: '🌀', color: '#ff0055' },
-    { name: 'Node.js', icon: '🟢', color: '#68a063' },
-    { name: 'MongoDB', icon: '🍃', color: '#47a248' },
-    { name: 'JWT Auth', icon: '🔐', color: '#d63aff' },
-    { name: 'Firebase', icon: '🔥', color: '#ffca28' },
-    { name: 'Docker', icon: '🐳', color: '#2496ed' },
-    { name: 'AWS EC2', icon: '☁️', color: '#ff9900' },
-    { name: 'AWS RDS', icon: '🗃️', color: '#ff9900' },
-    { name: 'SQL', icon: '🗄️', color: '#336791' },
-    { name: 'Spring Boot', icon: '🍃', color: '#6db33f' },
-    { name: 'Git & GitHub', icon: '🐙', color: '#ffffff' },
-    { name: 'DaVinci Resolve', icon: '🎬', color: '#e0243c' },
-    { name: 'CapCut', icon: '✂️', color: '#ffffff' },
-    { name: 'Figma', icon: '🎯', color: '#f24e1e' },
-    { name: 'Kubernetes', icon: '⚙️', color: '#326ce5' },
-    { name: 'Maven', icon: '📦', color: '#c71a36' },
+    'React',
+    'React Native',
+    'Next.js 14',
+    'JavaScript',
+    'TypeScript',
+    'Redux Toolkit',
+    'Tailwind CSS',
+    'Framer Motion',
+    'Node.js',
+    'MongoDB',
+    'JWT Auth',
+    'Firebase',
+    'Docker',
+    'AWS EC2',
+    'AWS RDS',
+    'SQL',
+    'Spring Boot',
+    'Git & GitHub',
+    'DaVinci Resolve',
+    'CapCut',
+    'Figma',
+    'Kubernetes',
+    'Maven',
   ],
 
   // ── Projects ──────────────────────────────
@@ -122,6 +172,7 @@ export const siteData = {
       id: 'moviefinder',
       title: 'MovieFinder',
       subtitle: 'Full-Stack Movie & Series Discovery Platform',
+      status: 'Currently Working',
       description:
         'A cinematic full-stack OTT-style discovery platform with hero slider, Ken Burns parallax, dominant-colour extraction, smart fuzzy search, personalised recommendations, JWT auth, Docker containerisation and a hidden admin portal.',
       tech: [
@@ -420,13 +471,13 @@ export const siteData = {
   videoCategories: ['All', 'Personal', 'Club & Events', 'City Police', 'Broadcast', 'Long Format'],
 
   clients: [
-    { name: 'KL Radio', role: 'Promos & Event Reels' },
-    { name: 'KL CIIE', role: 'Innovation & Hackathon Media' },
-    { name: 'KL Esports', role: 'Gaming Highlights' },
-    { name: 'KL EFIT CS&IT', role: 'Student Body Media' },
-    { name: 'Vijayawada City Police', role: 'Road Safety Campaign' },
-    { name: 'PavanGaming Telugu', role: 'Long-Format & Reels' },
-  ],
+    { name: 'KL Radio', role: 'Promos & Event Reels', type: 'Club', period: '2024 – Present' },
+    { name: 'KL CIIE', role: 'Innovation & Hackathon Media', type: 'Club', period: '2025' },
+    { name: 'KL Esports', role: 'Gaming Highlights', type: 'Club', period: '2025' },
+    { name: 'KL EFIT CS&IT', role: 'Student Body Media', type: 'Club', period: '2025' },
+    { name: 'Vijayawada City Police', role: 'Road Safety Campaign', type: 'Campaign', period: '2026' },
+    { name: 'PavanGaming Telugu', role: 'Long-Format & Reels', type: 'Freelance', period: '2026' },
+  ] as ClientItem[],
 
   achievements: [
     {
@@ -463,4 +514,3 @@ export const siteData = {
 }
 
 export type Project = (typeof siteData.projects)[0]
-export type VideoWork = (typeof siteData.videos)[0]

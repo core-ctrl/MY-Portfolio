@@ -1,185 +1,197 @@
 'use client'
 
-import { motion } from 'framer-motion'
-import SectionReveal from '@/components/ui/SectionReveal'
+import { useRef, useState } from 'react'
+import { motion, useMotionValue, useSpring, useMotionTemplate, useTransform } from 'framer-motion'
 import { siteData } from '@/lib/data'
 
+const FACTS = [
+  {
+    num: '01',
+    tag: 'Developer',
+    title: 'I BUILD\nPRODUCTS',
+    body: 'CS & IT student at KL University. I build full-stack apps — from secure REST APIs to cinematic Next.js interfaces. React, TypeScript, MongoDB, Docker — the real stack, deployed.',
+  },
+  {
+    num: '02',
+    tag: 'Powerlifter',
+    title: 'I LIFT\nHEAVY',
+    body: '3× District Gold Medalist 2026. Powerlifting gave me the discipline that drives my code — consistent, deliberate, and built to last under pressure.',
+  },
+  {
+    num: '03',
+    tag: 'Editor',
+    title: 'I EDIT\nFILM',
+    body: 'DaVinci Resolve editor producing promo reels for Vijayawada City Police, KL CIIE, and beyond. Color grading and motion timing shape the way I design every interface.',
+  },
+]
+
+const CLIENTS = [
+  { name: 'KL CIIE', role: 'Video Editor (2025) & Broadcasting Lead (2026)' },
+  { name: 'KL EFIT', role: 'Broadcaster & Editor' },
+  { name: 'KL Radio', role: 'Video Editor' },
+  { name: 'KL Esports', role: 'Broadcaster & Video Editor' }
+]
+
 export default function AboutSection() {
+  const imgRef = useRef<HTMLDivElement>(null)
+  const mx = useMotionValue(0)
+  const my = useMotionValue(0)
+  const mRadius = useMotionValue(0)
+  const sx = useSpring(mx, { stiffness: 40, damping: 16 })
+  const sy = useSpring(my, { stiffness: 40, damping: 16 })
+  const sRadius = useSpring(mRadius, { stiffness: 40, damping: 16 })
+  const clip = useMotionTemplate`circle(${sRadius}px at ${sx}px ${sy}px)`
+
+  const onMove = (e: React.PointerEvent<HTMLDivElement>) => {
+    if (!imgRef.current) return
+    const r = imgRef.current.getBoundingClientRect()
+    mx.set(e.clientX - r.left)
+    my.set(e.clientY - r.top)
+  }
+
   return (
-    <section id="about" className="relative py-32 px-6 overflow-hidden">
-      <div
-        className="glow-blob w-[400px] h-[400px] top-1/2 right-0 -translate-y-1/2"
-        style={{ background: 'radial-gradient(circle, rgba(34,211,238,0.06), transparent)' }}
-        aria-hidden="true"
-      />
+    <section id="about" className="relative bg-[var(--black)] border-t border-[var(--gold)]/10 py-24 md:py-32">
+      <div className="max-w-screen-xl mx-auto px-6 md:px-12">
 
-      <div className="max-w-6xl mx-auto">
-        <SectionReveal>
-          <p className="text-xs font-mono tracking-[0.3em] text-brand-400 uppercase mb-4">— About</p>
-        </SectionReveal>
-
-        <SectionReveal delay={80}>
-          <h2
-            className="text-4xl md:text-5xl lg:text-6xl leading-tight mb-16 max-w-2xl"
-            style={{ fontFamily: 'var(--font-display)', fontWeight: 300 }}
+        {/* ── Section label ── */}
+        <div className="mb-20">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.7 }}
+            className="flex items-center gap-3 mb-4"
           >
-            <span className="text-white/90">Where code meets</span>
-            <br />
-            <em className="gradient-text not-italic">creativity</em>
-          </h2>
-        </SectionReveal>
+            <div className="w-8 h-px bg-[var(--gold)]" />
+            <span className="text-[10px] font-mono tracking-[0.4em] text-[var(--gold)] uppercase">
+              Origin
+            </span>
+          </motion.div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16">
-          {/* Left — photo + stats */}
-          <div>
-            {/* Profile photo */}
-            <SectionReveal delay={100}>
-              <div className="relative mb-8">
-                <div className="relative w-full max-w-xs mx-auto lg:mx-0">
-                  {/* Glow ring */}
-                  <div
-                    className="absolute -inset-1 rounded-3xl opacity-40"
-                    style={{ background: 'linear-gradient(135deg, #6a50ff, #22d3ee)', filter: 'blur(12px)' }}
-                  />
-                  <div className="relative rounded-3xl overflow-hidden aspect-[3/4] bg-surface-700">
-                    <img
-                      src={siteData.photos.primary}
-                      alt="Sai Harshitha"
-                      className="w-full h-full object-cover object-top"
-                      onError={(e) => {
-                        // Fallback to secondary photo if .heic fails
-                        ;(e.target as HTMLImageElement).src = siteData.photos.secondary
-                      }}
-                    />
-                    {/* Subtle vignette */}
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent" />
-                  </div>
+          <motion.div 
+            initial={{ opacity: 0, y: 40 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
+            style={{ fontFamily: 'var(--font-hero)', fontSize: 'clamp(56px, 10vw, 140px)', lineHeight: 0.9 }}
+          >
+            <div className="text-[var(--cream)] overflow-hidden">
+              <motion.div initial={{ y: '100%' }} whileInView={{ y: 0 }} viewport={{ once: true }} transition={{ duration: 0.8, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}>
+                GENESIS OF A
+              </motion.div>
+            </div>
+            <div className="overflow-hidden">
+              <motion.div initial={{ y: '100%' }} whileInView={{ y: 0 }} viewport={{ once: true }} transition={{ duration: 0.8, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}>
+                <span className="font-serif italic lowercase tracking-normal text-[var(--gold)]" style={{ WebkitTextStroke: '0px' }}>Creator</span>
+              </motion.div>
+            </div>
+          </motion.div>
+        </div>
+
+        {/* ── Two columns: portrait left, facts right ── */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-20 items-start">
+
+          {/* Portrait */}
+          <div className="lg:col-span-4">
+            <motion.div
+              initial={{ opacity: 0, x: -30 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.9 }}
+              ref={imgRef}
+              onPointerMove={onMove}
+              onPointerEnter={() => mRadius.set(140)}
+              onPointerLeave={() => mRadius.set(0)}
+              className="relative overflow-hidden cursor-crosshair"
+              style={{ aspectRatio: '3/4' }}
+            >
+              {/* Base */}
+              <img
+                src={siteData.photos.primary}
+                alt="Sai Harshitha"
+                className="absolute inset-0 w-full h-full object-cover"
+              />
+              <div className="absolute inset-0 bg-[var(--gold)]/5 mix-blend-overlay" />
+
+              {/* Hover reveal */}
+              <motion.div style={{ clipPath: clip }} className="absolute inset-0 z-10">
+                <img
+                  src="https://res.cloudinary.com/dkrvtfbor/image/upload/v1778848190/1_oozjae.jpg"
+                  alt="Alt"
+                  className="w-full h-full object-cover"
+                />
+              </motion.div>
+
+              <div className="absolute inset-0 bg-gradient-to-t from-[var(--black)]/60 via-transparent to-transparent z-20" />
+
+              {/* Name overlay */}
+              <div className="absolute bottom-4 left-4 z-30">
+                <p className="text-[8px] font-mono tracking-[0.3em] text-[var(--gold)] uppercase">Sai Harshitha</p>
+                <motion.p style={{ opacity: useTransform(sRadius, [0, 140], [1, 0]) }} className="text-[8px] font-mono text-[var(--cream-muted)]/60 tracking-widest">Hover to reveal</motion.p>
+              </div>
+            </motion.div>
+          </div>
+
+          {/* Facts */}
+          <div className="lg:col-span-8 flex flex-col gap-0">
+            {FACTS.map((f, i) => (
+              <motion.div
+                key={f.num}
+                initial={{ opacity: 0, y: 40 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.8, delay: i * 0.1, ease: [0.16, 1, 0.3, 1] }}
+                className="group border-t border-[var(--gold)]/15 py-10 flex flex-col md:flex-row gap-6 md:gap-10 hover:border-[var(--gold)]/40 transition-colors duration-500"
+              >
+                {/* Number + tag */}
+                <div className="flex md:flex-col gap-3 md:gap-1 md:w-32 shrink-0">
+                  <span className="text-[9px] font-mono text-[var(--gold)]/50 tracking-widest">{f.num}</span>
+                  <span className="text-[9px] font-mono text-[var(--cream-muted)] tracking-[0.3em] uppercase">{f.tag}</span>
                 </div>
 
-                {/* Floating badge */}
-                <motion.div
-                  animate={{ y: [0, -8, 0] }}
-                  transition={{ repeat: Infinity, duration: 4, ease: 'easeInOut' }}
-                  className="absolute -bottom-4 -right-4 lg:right-auto lg:left-full lg:ml-4 glass rounded-2xl px-4 py-3 hidden sm:block"
-                >
-                  <p className="text-xs font-mono text-white/40 mb-0.5">Powerlifter</p>
-                  <p className="text-sm text-white/80">🏅 District Gold 2026</p>
-                </motion.div>
-              </div>
-            </SectionReveal>
-
-            {/* Stats */}
-            <SectionReveal delay={160}>
-              <div className="grid grid-cols-2 gap-4">
-                {siteData.stats.map((stat) => (
+                {/* Content */}
+                <div className="flex-1">
                   <div
-                    key={stat.label}
-                    className="glass rounded-2xl p-5 glass-hover relative overflow-hidden"
+                    style={{
+                      fontFamily: 'var(--font-hero)',
+                      fontSize: 'clamp(28px, 4vw, 52px)',
+                      lineHeight: 0.9,
+                      color: 'var(--cream)',
+                      whiteSpace: 'pre-line',
+                    }}
+                    className="mb-4 group-hover:text-[var(--gold)] transition-colors duration-500"
                   >
-                    {/* Shimmer */}
-                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/[0.02] to-transparent translate-x-[-100%] hover:translate-x-[100%] transition-transform duration-700" />
-                    <p
-                      className="text-3xl gradient-text mb-1"
-                      style={{ fontFamily: 'var(--font-display)', fontWeight: 300 }}
-                    >
-                      {stat.value}
-                    </p>
-                    <p className="text-xs text-white/40 font-mono tracking-wide">{stat.label}</p>
+                    {f.title}
                   </div>
-                ))}
-              </div>
-            </SectionReveal>
-          </div>
-
-          {/* Right — bio + education */}
-          <div>
-            <SectionReveal delay={120}>
-              <p className="text-white/60 text-base leading-8 mb-6">
-                I&apos;m <strong className="text-white/90">Sai Harshitha</strong>, a Computer Science & IT student at KL University who refuses to stay in one lane. I build full-stack products that actually ship, edit cinematic videos for brands and creators, and train as a competitive powerlifter.
-              </p>
-              <p className="text-white/60 text-base leading-8 mb-10">
-                The discipline of lifting heavy translates directly to the patience and precision of writing good code. Everything I do is about pushing past limits — whether that&apos;s a personal record or a production deployment on AWS.
-              </p>
-            </SectionReveal>
-
-            {/* Education timeline with logos */}
-            <SectionReveal delay={150}>
-              <h3 className="text-[10px] font-mono tracking-[0.3em] text-white/30 uppercase mb-6">
-                Education
-              </h3>
-              <div className="relative pl-6">
-                <div className="timeline-line" />
-                <div className="space-y-5">
-                  {siteData.education.map((edu, i) => (
-                    <motion.div
-                      key={edu.institution}
-                      initial={{ opacity: 0, x: -16 }}
-                      whileInView={{ opacity: 1, x: 0 }}
-                      viewport={{ once: true }}
-                      transition={{ delay: i * 0.12, duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-                      className="relative"
-                    >
-                      {/* Timeline dot */}
-                      <div
-                        className={`absolute -left-[21px] top-4 w-2.5 h-2.5 rounded-full border border-brand-500 ${
-                          edu.current
-                            ? 'bg-brand-500 shadow-[0_0_8px_rgba(106,80,255,0.6)]'
-                            : 'bg-surface-800'
-                        }`}
-                      />
-
-                      <div className="glass rounded-2xl p-4 glass-hover flex items-center gap-4">
-                        {/* Institution logo */}
-                        <div className="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center shrink-0 overflow-hidden p-1">
-                          <img
-                            src={edu.logo}
-                            alt={edu.institution}
-                            className="w-full h-full object-contain"
-                            onError={(e) => {
-                              ;(e.target as HTMLImageElement).style.display = 'none'
-                            }}
-                          />
-                        </div>
-
-                        <div className="flex-1 min-w-0">
-                          <div className="flex items-center gap-2 flex-wrap">
-                            <p className="text-sm font-medium text-white/90 truncate">{edu.institution}</p>
-                            {edu.current && (
-                              <span className="text-[9px] font-mono px-2 py-0.5 rounded-full bg-brand-500/15 text-brand-400 border border-brand-500/20 shrink-0">
-                                Current
-                              </span>
-                            )}
-                          </div>
-                          <p className="text-xs text-white/45 mt-0.5 truncate">{edu.degree}</p>
-                          <div className="flex items-center gap-3 mt-1">
-                            <span className="text-[10px] font-mono text-white/25">{edu.period}</span>
-                            {!edu.current && (
-                              <span className="text-[10px] font-mono text-white/25">{edu.grade}</span>
-                            )}
-                          </div>
-                        </div>
-                      </div>
-                    </motion.div>
-                  ))}
+                  <p className="text-[var(--cream-muted)] text-sm leading-7 font-light max-w-lg border-l border-[var(--gold)]/20 pl-4">
+                    {f.body}
+                  </p>
                 </div>
-              </div>
-            </SectionReveal>
+              </motion.div>
+            ))}
 
-            {/* Clients */}
-            <SectionReveal delay={200}>
-              <h3 className="text-[10px] font-mono tracking-[0.3em] text-white/30 uppercase mt-8 mb-4">
-                Clients & Collaborations
-              </h3>
-              <div className="flex flex-wrap gap-2">
-                {siteData.clients.map((client) => (
-                  <div key={client.name} className="glass rounded-xl px-3 py-2 glass-hover">
-                    <p className="text-xs font-medium text-white/70">{client.name}</p>
-                    <p className="text-[10px] text-white/30 font-mono">{client.role}</p>
-                  </div>
+            {/* Bottom border */}
+            <div className="border-t border-[var(--gold)]/15 pt-16 mt-8">
+              <p className="text-[10px] font-mono tracking-[0.3em] text-[var(--cream-muted)] uppercase mb-8">Clients & Collaborations</p>
+              
+              <div className="flex flex-wrap gap-4">
+                {CLIENTS.map((client, i) => (
+                  <motion.div
+                    key={client.name}
+                    initial={{ opacity: 0, scale: 0.95 }}
+                    whileInView={{ opacity: 1, scale: 1 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.5, delay: i * 0.1 }}
+                    className="border border-[var(--gold)]/15 bg-[var(--bg-raised)] rounded-2xl px-6 py-5 hover:border-[var(--gold)]/40 hover:bg-[var(--gold)]/5 transition-colors cursor-default"
+                  >
+                    <p className="text-sm font-semibold text-[var(--cream)] mb-1">{client.name}</p>
+                    <p className="text-[10px] font-mono tracking-wide text-[var(--cream-muted)] uppercase">{client.role}</p>
+                  </motion.div>
                 ))}
               </div>
-            </SectionReveal>
+            </div>
           </div>
+
         </div>
       </div>
     </section>

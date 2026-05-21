@@ -1,137 +1,151 @@
 'use client'
 
+import { useState } from 'react'
 import { motion } from 'framer-motion'
-import SectionReveal from '@/components/ui/SectionReveal'
 import { siteData } from '@/lib/data'
 
-// Skill category card
-function SkillCategory({
-  title,
-  skills,
-  color,
-  delay = 0,
-}: {
-  title: string
-  skills: string[]
-  color: string
-  delay?: number
-}) {
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 24 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true }}
-      transition={{ delay, duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-      whileHover={{ y: -4 }}
-      className="glass glass-hover rounded-3xl p-6 relative overflow-hidden"
-    >
-      {/* Color dot indicator */}
-      <div
-        className="w-2 h-2 rounded-full mb-4"
-        style={{ background: color, boxShadow: `0 0 8px ${color}` }}
-      />
-      <h3 className="text-sm font-medium text-white/70 mb-4 font-mono tracking-wide">
-        {title}
-      </h3>
-      <div className="flex flex-wrap gap-2">
-        {skills.map((skill) => (
-          <span
-            key={skill}
-            className="text-xs px-3 py-1.5 rounded-xl bg-white/4 border border-white/8 text-white/60 hover:text-white/90 hover:bg-white/8 transition-all cursor-default"
-          >
-            {skill}
-          </span>
-        ))}
-      </div>
-    </motion.div>
-  )
-}
-
-// Single marquee skill chip
-function SkillChip({ name, icon }: { name: string; icon: string }) {
-  return (
-    <div className="flex items-center gap-2.5 px-4 py-2.5 glass rounded-xl border border-white/6 shrink-0">
-      <span className="text-base leading-none">{icon}</span>
-      <span className="text-sm text-white/60 font-mono whitespace-nowrap">{name}</span>
-    </div>
-  )
-}
+const CATEGORIES = [
+  { key: 'frontend', label: 'Frontend', color: '#6a50ff' },
+  { key: 'backend',  label: 'Backend',  color: '#C9A66B' },
+  { key: 'database', label: 'Database', color: '#50a050' },
+  { key: 'cloud',    label: 'Cloud & DevOps', color: '#50a0d0' },
+  { key: 'creative', label: 'Creative', color: '#d050a0' },
+] as const
 
 export default function SkillsSection() {
-  const { allSkills, skills } = siteData
-
-  // Duplicate for seamless loop
-  const doubled = [...allSkills, ...allSkills]
+  const [hovered, setHovered] = useState<string | null>(null)
+  const all = siteData.allSkills
+  const row1 = all.slice(0, Math.ceil(all.length / 2))
+  const row2 = all.slice(Math.ceil(all.length / 2))
 
   return (
-    <section id="skills" className="relative py-32 overflow-hidden">
-      <div className="max-w-6xl mx-auto px-6">
-        <SectionReveal>
-          <p className="text-xs font-mono tracking-[0.3em] text-brand-400 uppercase mb-4">
-            — Skills
+    <section id="skills" className="relative py-32 bg-[var(--bg-surface)] border-t border-[var(--gold)]/10 overflow-hidden">
+
+      {/* ── Marquee ticker rows ── */}
+      <div className="w-full border-t border-b border-[var(--gold)]/10 py-4 mb-24 select-none overflow-hidden bg-[var(--bg-raised)]/40">
+        <div className="marquee-container mb-3">
+          <div className="marquee-content gap-10 flex items-center pr-10">
+            {[...row1, ...row1].map((s, i) => (
+              <span key={i} className="text-xs font-mono tracking-[0.25em] text-[var(--cream-dim)] uppercase whitespace-nowrap flex items-center gap-3">
+                {s} <span className="text-[var(--gold)]">✦</span>
+              </span>
+            ))}
+          </div>
+        </div>
+        <div className="marquee-container">
+          <div className="marquee-content marquee-reverse gap-10 flex items-center pr-10">
+            {[...row2, ...row2].map((s, i) => (
+              <span key={i} className="text-xs font-mono tracking-[0.25em] text-[var(--cream-muted)] uppercase whitespace-nowrap flex items-center gap-3">
+                {s} <span className="text-[var(--gold)]/50">✦</span>
+              </span>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      <div className="max-w-screen-xl mx-auto px-6 md:px-12">
+
+        {/* Header */}
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.8 }}
+          className="mb-20"
+        >
+          <div className="flex items-center gap-3 mb-4">
+            <div className="w-6 h-px bg-[var(--gold)]" />
+            <span className="text-[10px] font-mono tracking-[0.4em] text-[var(--gold)] uppercase">System Core</span>
+          </div>
+          <div style={{ fontFamily: 'var(--font-hero)', fontSize: 'clamp(56px, 10vw, 140px)', lineHeight: 0.9 }}>
+            <div className="text-[var(--cream)] overflow-hidden">
+              <motion.div initial={{ y: '100%' }} whileInView={{ y: 0 }} viewport={{ once: true }} transition={{ duration: 0.8, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}>
+                TECHNICAL
+              </motion.div>
+            </div>
+            <div className="overflow-hidden">
+              <motion.div initial={{ y: '100%' }} whileInView={{ y: 0 }} viewport={{ once: true }} transition={{ duration: 0.8, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}>
+                <span className="font-serif italic lowercase tracking-normal text-[var(--gold)]" style={{ WebkitTextStroke: '0px' }}>Arsenal</span>
+              </motion.div>
+            </div>
+          </div>
+        </motion.div>
+
+        {/* Interactive typography wall */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.9 }}
+          className="border border-[var(--gold)]/10 p-8 md:p-14 mb-20 relative overflow-hidden"
+        >
+          <div className="absolute top-4 left-4 text-[9px] font-mono text-[var(--gold)]/40 tracking-widest">[ MATRIX_V2 ]</div>
+
+          <div className="flex flex-wrap gap-x-3 gap-y-4 justify-center items-center py-4">
+            {all.map(skill => (
+              <motion.span
+                key={skill}
+                onMouseEnter={() => setHovered(skill)}
+                onMouseLeave={() => setHovered(null)}
+                animate={{
+                  color: hovered === skill ? 'var(--gold)' : 'rgba(200,186,160,0.25)',
+                  scale: hovered === skill ? 1.12 : 1,
+                }}
+                transition={{ type: 'spring', stiffness: 300, damping: 20 }}
+                className="cursor-default select-none uppercase"
+                style={{
+                  fontFamily: 'var(--font-hero)',
+                  fontSize: 'clamp(22px, 3.5vw, 48px)',
+                  lineHeight: 1,
+                  letterSpacing: '-0.01em',
+                }}
+              >
+                {skill}
+              </motion.span>
+            ))}
+          </div>
+
+          <p className="text-center mt-8 text-[8px] font-mono text-[var(--cream-muted)]/40 tracking-widest uppercase animate-pulse">
+            Hover to illuminate
           </p>
-        </SectionReveal>
-        <SectionReveal delay={80}>
-          <h2
-            className="text-4xl md:text-5xl lg:text-6xl leading-tight mb-6 max-w-xl"
-            style={{ fontFamily: 'var(--font-display)', fontWeight: 300 }}
-          >
-            <span className="text-white/90">The tools of</span>
-            <br />
-            <em className="gradient-text not-italic">my craft</em>
-          </h2>
-        </SectionReveal>
-      </div>
+        </motion.div>
 
-      {/* ── Marquee rows ─────────────────── */}
-      <div className="mt-10 mb-14 space-y-4 overflow-hidden">
-        {/* Row 1 — left to right */}
-        <div className="marquee-container">
-          <div className="marquee-track">
-            {doubled.map((s, i) => (
-              <SkillChip key={`a-${i}`} name={s.name} icon={s.icon} />
-            ))}
-          </div>
+        {/* Category cards */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
+          {CATEGORIES.map((cat, i) => {
+            const skills = siteData.skills[cat.key]
+            return (
+              <motion.div
+                key={cat.key}
+                initial={{ opacity: 0, y: 40 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.7, delay: i * 0.08 }}
+                className="border border-[var(--gold)]/15 bg-[var(--bg-raised)] p-6 hover:border-[var(--gold)]/40 transition-all duration-300 group"
+              >
+                {/* Color dot + label */}
+                <div className="flex items-center gap-2 mb-5">
+                  <span className="w-2 h-2 rounded-full" style={{ background: cat.color }} />
+                  <span className="text-[9px] font-mono tracking-widest text-[var(--cream-muted)] uppercase">{cat.label}</span>
+                </div>
+
+                {/* Skills list */}
+                <div className="flex flex-col gap-2">
+                  {skills.map(s => (
+                    <div
+                      key={s}
+                      className="flex items-center gap-2 text-[11px] font-mono text-[var(--cream-dim)] hover:text-[var(--cream)] transition-colors"
+                    >
+                      <span className="w-1 h-1 rounded-full bg-current opacity-40" />
+                      {s}
+                    </div>
+                  ))}
+                </div>
+              </motion.div>
+            )
+          })}
         </div>
 
-        {/* Row 2 — right to left */}
-        <div className="marquee-container">
-          <div className="marquee-track marquee-track-reverse">
-            {[...doubled].reverse().map((s, i) => (
-              <SkillChip key={`b-${i}`} name={s.name} icon={s.icon} />
-            ))}
-          </div>
-        </div>
-      </div>
-
-      {/* ── Category cards grid ───────────── */}
-      <div className="max-w-6xl mx-auto px-6">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          <SkillCategory
-            title="Frontend"
-            skills={skills.frontend}
-            color="#6a50ff"
-            delay={0}
-          />
-          <SkillCategory
-            title="Backend & DB"
-            skills={skills.backend}
-            color="#22d3ee"
-            delay={0.08}
-          />
-          <SkillCategory
-            title="Cloud & DevOps"
-            skills={skills.cloud}
-            color="#f59e0b"
-            delay={0.16}
-          />
-          <SkillCategory
-            title="Creative Tools"
-            skills={skills.creative}
-            color="#f43f5e"
-            delay={0.24}
-          />
-        </div>
       </div>
     </section>
   )
