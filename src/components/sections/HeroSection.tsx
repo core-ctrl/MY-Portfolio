@@ -7,33 +7,7 @@ import { ArrowDown } from 'lucide-react'
 const ROLES = ['POWERLIFTER', 'DEVELOPER', 'CREATOR', 'SAI HARSHITHA']
 const ROLE_DURATION = 600
 
-function useViewportFontSize(text: string, padPx = 32) {
-  const ref = useRef<HTMLDivElement>(null)
-  const [size, setSize] = useState('18vw')
-
-  useEffect(() => {
-    const calc = () => {
-      if (!ref.current) return
-      const parent = ref.current.parentElement!
-      const availW = parent.clientWidth - padPx * 2
-      const testSize = 100
-      ref.current.style.fontSize = `${testSize}px`
-      const natural = ref.current.scrollWidth
-      if (!natural) return
-      const px = (availW / natural) * testSize
-      setSize(`${px}px`)
-    }
-    calc()
-    window.addEventListener('resize', calc)
-    const t = setTimeout(calc, 100)
-    return () => {
-      window.removeEventListener('resize', calc)
-      clearTimeout(t)
-    }
-  }, [text, padPx])
-
-  return { ref, size }
-}
+// Replaced useViewportFontSize with pure CSS clamp
 
 function BackgroundParticles() {
   const [elements, setElements] = useState<{ id: number; x: number; y: number; size: number; duration: number; type: number }[]>([])
@@ -96,8 +70,7 @@ export default function HeroSection() {
   const sx = useSpring(mx, { stiffness: 40, damping: 18 })
   const sy = useSpring(my, { stiffness: 40, damping: 18 })
 
-  // Dynamic font sizing
-  const { ref: nameRef, size: nameFontSize } = useViewportFontSize('SAI HARSHITHA', 32)
+  // Dynamic font sizing via CSS clamp in the render block instead of JS
 
   useEffect(() => {
     const delay = setTimeout(() => {
@@ -186,7 +159,7 @@ export default function HeroSection() {
                 transition={{ duration: 2.4, ease: [0.16, 1, 0.3, 1] }}
                 style={{
                   fontFamily: 'var(--font-hero)',
-                  fontSize: nameFontSize,
+                  fontSize: 'clamp(3rem, 12vw, 15rem)',
                   lineHeight: 0.88,
                   letterSpacing: '-0.02em',
                   whiteSpace: 'nowrap',
@@ -239,9 +212,7 @@ export default function HeroSection() {
             </div>
           )}
 
-          <span ref={nameRef} style={{ visibility: 'hidden', position: 'absolute', whiteSpace: 'nowrap', fontFamily: 'var(--font-hero)' }}>
-            SAI HARSHITHA
-          </span>
+
         </div>
 
         {/* ── BOTTOM BAR ── */}
