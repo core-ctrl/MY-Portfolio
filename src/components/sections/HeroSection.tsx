@@ -134,10 +134,13 @@ export default function HeroSection() {
           className="relative z-10 px-6 md:px-8 pt-28 flex justify-between items-start"
         >
           <div className="flex flex-col gap-2">
-            <div className="flex items-center gap-3">
-              <div className="border border-[var(--gold)]/40 px-3 py-1 flex items-center justify-center bg-[var(--black)]/50 backdrop-blur-sm">
-                <span className="text-[9px] font-mono tracking-[0.3em] text-[var(--gold)] uppercase transition-all duration-300">
-                  [ I AM {ROLES[roleIdx]} ]
+            <div className="flex items-center gap-2">
+              <span className="text-[10px] font-mono tracking-[0.2em] text-[var(--cream)] uppercase opacity-80">
+                I AM
+              </span>
+              <div className="border border-[var(--gold)] px-3 py-1 flex items-center justify-center bg-[var(--gold)]/10 backdrop-blur-sm">
+                <span className="text-[9px] font-mono tracking-[0.3em] text-[var(--gold)] font-bold uppercase transition-all duration-300 shadow-[var(--gold)] drop-shadow-md">
+                  {ROLES[roleIdx]}
                 </span>
               </div>
             </div>
