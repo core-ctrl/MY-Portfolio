@@ -3,7 +3,7 @@
 A cinematic, highly interactive personal portfolio built for performance, aesthetics, and dynamic presence. This portfolio showcases my journey as a Full-Stack Developer, Video Editor, and Powerlifter.
 
 ## 🚀 Live Demo
-[View Live Site](https://my-portfolio-core-ctrl.vercel.app/) *(Replace with actual URL if different)*
+[View Live Site](https://www.parupallisaiharshitha.in/) 
 
 ## 🛠️ Tech Stack & Arsenal
 
