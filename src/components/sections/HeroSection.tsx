@@ -136,8 +136,8 @@ export default function HeroSection() {
           <div className="flex flex-col gap-2">
             <div className="flex items-center gap-3">
               <div className="border border-[var(--gold)]/40 px-3 py-1 flex items-center justify-center bg-[var(--black)]/50 backdrop-blur-sm">
-                <span className="text-[9px] font-mono tracking-[0.3em] text-[var(--gold)] uppercase">
-                  [ SAI HARSHITHA ]
+                <span className="text-[9px] font-mono tracking-[0.3em] text-[var(--gold)] uppercase transition-all duration-300">
+                  [ I AM {ROLES[roleIdx]} ]
                 </span>
               </div>
             </div>
@@ -169,42 +169,48 @@ export default function HeroSection() {
                 className="group cursor-default"
               >
                 {roleIdx < 3 ? (
-                  <div
-                    style={{
-                      color: 'transparent',
-                      WebkitTextStroke: 'max(1.5px, 0.2vw) rgba(201,166,107,0.5)',
-                    }}
-                  >
-                    {ROLES[roleIdx]}
+                  <div className="flex flex-col items-center justify-center">
+                    <span className="text-[var(--gold)] opacity-80 text-xl md:text-4xl font-serif italic mb-[-2vw] tracking-wider z-10">I am</span>
+                    <div
+                      style={{
+                        color: 'transparent',
+                        WebkitTextStroke: 'max(1.5px, 0.2vw) rgba(201,166,107,0.5)',
+                      }}
+                    >
+                      {ROLES[roleIdx]}
+                    </div>
                   </div>
                 ) : (
-                  <div className="relative inline-block w-full">
-                    {/* Back layer */}
-                    <div 
-                      className="absolute inset-0 flex justify-center items-center pointer-events-none group-hover:blur-sm transition-all duration-700"
-                      style={{ color: 'transparent', WebkitTextStroke: 'max(1.5px, 0.2vw) rgba(201,166,107,0.4)' }}
-                    >
-                      SAI HARSHITHA
-                    </div>
-                    {/* Front interactive layer */}
-                    <div 
-                      className="relative z-10 flex justify-center items-center overflow-hidden"
-                      style={{ color: 'var(--cream)', transition: 'color 0.5s ease' }}
-                    >
-                      {Array.from("SAI HARSHITHA").map((char, i) => (
-                        <motion.span
-                          key={i}
-                          whileHover={{ 
-                            y: -10, 
-                            color: 'var(--gold)',
-                            transition: { duration: 0.1 }
-                          }}
-                          className="inline-block transition-colors duration-500"
-                          style={char === ' ' ? { width: '0.2em' } : {}}
-                        >
-                          {char}
-                        </motion.span>
-                      ))}
+                  <div className="flex flex-col items-center justify-center">
+                    <span className="text-[var(--gold)] opacity-80 text-xl md:text-4xl font-serif italic mb-[-2vw] tracking-wider z-10">I am</span>
+                    <div className="relative inline-block w-full">
+                      {/* Back layer */}
+                      <div 
+                        className="absolute inset-0 flex justify-center items-center pointer-events-none group-hover:blur-sm transition-all duration-700"
+                        style={{ color: 'transparent', WebkitTextStroke: 'max(1.5px, 0.2vw) rgba(201,166,107,0.4)' }}
+                      >
+                        SAI HARSHITHA
+                      </div>
+                      {/* Front interactive layer */}
+                      <div 
+                        className="relative z-10 flex justify-center items-center overflow-hidden"
+                        style={{ color: 'var(--cream)', transition: 'color 0.5s ease' }}
+                      >
+                        {Array.from("SAI HARSHITHA").map((char, i) => (
+                          <motion.span
+                            key={i}
+                            whileHover={{ 
+                              y: -10, 
+                              color: 'var(--gold)',
+                              transition: { duration: 0.1 }
+                            }}
+                            className="inline-block transition-colors duration-500"
+                            style={char === ' ' ? { width: '0.2em' } : {}}
+                          >
+                            {char}
+                          </motion.span>
+                        ))}
+                      </div>
                     </div>
                   </div>
                 )}
