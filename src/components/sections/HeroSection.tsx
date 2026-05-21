@@ -54,7 +54,8 @@ function BackgroundParticles() {
 export default function HeroSection() {
   const containerRef = useRef<HTMLDivElement>(null)
 
-  const [roleIdx, setRoleIdx] = useState(0)
+  const [boxRoleIdx, setBoxRoleIdx] = useState(0)
+  const [mainRoleIdx, setMainRoleIdx] = useState(0)
   const [phase, setPhase] = useState(0) // 0 = animating, 1 = completed
   const [ready, setReady] = useState(false)
 
@@ -78,10 +79,10 @@ export default function HeroSection() {
       let idx = 0
       const cycle = setInterval(() => {
         idx++
+        setBoxRoleIdx(idx % ROLES.length)
         if (idx < ROLES.length) {
-          setRoleIdx(idx)
+          setMainRoleIdx(idx)
         } else {
-          clearInterval(cycle)
           setPhase(1)
         }
       }, ROLE_DURATION)
@@ -140,7 +141,7 @@ export default function HeroSection() {
               </span>
               <div className="border border-[var(--gold)] px-3 py-1 flex items-center justify-center bg-[var(--gold)]/10 backdrop-blur-sm">
                 <span className="text-[9px] font-mono tracking-[0.3em] text-[var(--gold)] font-bold uppercase transition-all duration-300 shadow-[var(--gold)] drop-shadow-md">
-                  {ROLES[roleIdx]}
+                  {ROLES[boxRoleIdx]}
                 </span>
               </div>
             </div>
@@ -162,7 +163,7 @@ export default function HeroSection() {
                 transition={{ duration: 2.4, ease: [0.16, 1, 0.3, 1] }}
                 style={{
                   fontFamily: 'var(--font-hero)',
-                  fontSize: 'clamp(3rem, 12vw, 15rem)',
+                  fontSize: 'clamp(4rem, 16vw, 25rem)',
                   lineHeight: 0.88,
                   letterSpacing: '-0.02em',
                   whiteSpace: 'nowrap',
@@ -171,22 +172,21 @@ export default function HeroSection() {
                 }}
                 className="group cursor-default"
               >
-                {roleIdx < 3 ? (
+                {mainRoleIdx < 3 ? (
                   <div className="flex flex-col items-center justify-center">
-                    <span className="text-[var(--gold)] opacity-80 text-xl md:text-4xl font-serif italic mb-[-2vw] tracking-wider z-10">I am</span>
+                    <span className="text-[var(--gold)] opacity-80 text-xl md:text-4xl font-serif italic mb-[-2vw] tracking-wider z-10 transition-opacity duration-500">I am</span>
                     <div
                       style={{
                         color: 'transparent',
                         WebkitTextStroke: 'max(1.5px, 0.2vw) rgba(201,166,107,0.5)',
                       }}
                     >
-                      {ROLES[roleIdx]}
+                      {ROLES[mainRoleIdx]}
                     </div>
                   </div>
                 ) : (
                   <div className="flex flex-col items-center justify-center">
-                    <span className="text-[var(--gold)] opacity-80 text-xl md:text-4xl font-serif italic mb-[-2vw] tracking-wider z-10">I am</span>
-                    <div className="relative inline-block w-full">
+                    <div className="relative inline-block w-full mt-4 md:mt-12">
                       {/* Back layer */}
                       <div 
                         className="absolute inset-0 flex justify-center items-center pointer-events-none group-hover:blur-sm transition-all duration-700"
