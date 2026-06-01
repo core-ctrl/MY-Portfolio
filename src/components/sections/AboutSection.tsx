@@ -116,7 +116,7 @@ export default function AboutSection() {
               {/* Hover reveal */}
               <motion.div style={{ clipPath: clip }} className="absolute inset-0 z-10 pointer-events-none">
                 <img
-                  src={siteData.photos.secondary}
+                  src="https://res.cloudinary.com/dkrvtfbor/image/upload/v1778848190/1_oozjae.jpg"
                   alt="Sai Harshitha Hover"
                   className="w-full h-full object-cover"
                 />
