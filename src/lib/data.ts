@@ -177,7 +177,7 @@ export const siteData = {
       id: 'orbit',
       title: 'Orbit',
       subtitle: 'Full-Stack Enterprise Observability Platform',
-      status: 'Currently Working',
+      status: 'Currently Building',
       description: 'A next-generation, self-hosted observability and incident management platform built with a stunning glassmorphism UI. It provides real-time error tracking, performance metrics, and bidirectional SDK control, allowing developers to manage their entire tech stack\'s health dynamically.',
       tech: ['Next.js 15', 'React 18', 'FastAPI', 'Python', 'PostgreSQL', 'Redis', 'Socket.IO', 'Tailwind CSS', 'Docker'],
       category: 'Full-Stack',
