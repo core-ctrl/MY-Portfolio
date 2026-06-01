@@ -109,23 +109,23 @@ export default function AboutSection() {
               <img
                 src={siteData.photos.primary}
                 alt="Sai Harshitha"
-                className="absolute inset-0 w-full h-full object-cover"
+                className="absolute inset-0 w-full h-full object-cover pointer-events-none"
               />
-              <div className="absolute inset-0 bg-[var(--gold)]/5 mix-blend-overlay" />
+              <div className="absolute inset-0 bg-[var(--gold)]/5 mix-blend-overlay pointer-events-none" />
 
               {/* Hover reveal */}
-              <motion.div style={{ clipPath: clip }} className="absolute inset-0 z-10">
+              <motion.div style={{ clipPath: clip }} className="absolute inset-0 z-10 pointer-events-none">
                 <img
-                  src="https://res.cloudinary.com/dkrvtfbor/image/upload/v1778848190/1_oozjae.jpg"
-                  alt="Alt"
+                  src={siteData.photos.secondary}
+                  alt="Sai Harshitha Hover"
                   className="w-full h-full object-cover"
                 />
               </motion.div>
 
-              <div className="absolute inset-0 bg-gradient-to-t from-[var(--black)]/60 via-transparent to-transparent z-20" />
+              <div className="absolute inset-0 bg-gradient-to-t from-[var(--black)]/60 via-transparent to-transparent z-20 pointer-events-none" />
 
               {/* Name overlay */}
-              <div className="absolute bottom-4 left-4 z-30">
+              <div className="absolute bottom-4 left-4 z-30 pointer-events-none">
                 <p className="text-[8px] font-mono tracking-[0.3em] text-[var(--gold)] uppercase">Sai Harshitha</p>
                 <motion.p style={{ opacity: useTransform(sRadius, [0, 140], [1, 0]) }} className="text-[8px] font-mono text-[var(--cream-muted)]/60 tracking-widest">Hover to reveal</motion.p>
               </div>
